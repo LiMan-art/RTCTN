@@ -33,7 +33,7 @@ def warning():
         hour = data_info()
         key = (datetime.now().strftime('%Y-%m-%d'), hour)
 
-        if hour == 00: # полночь, любой день
+        if hour == 0: # полночь, любой день
             if key != last:
                 mess_info()
                 last = key
