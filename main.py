@@ -1,7 +1,11 @@
-import calendar, tkinter as tk
+import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime
 import time
+from ProdCalendar import ProdCalendar
+
+calendar = ProdCalendar(cache_dir='.cache/')
+
 
 def mess_info():
     
@@ -14,15 +18,9 @@ def data_info():
 
     mont = datetime.now()
 
-    day = int(mont.strftime('%d'))
-    monday = int(mont.strftime('%m'))
-    year = int(mont.strftime('%Y'))
     hour = int(mont.strftime('%H'))
 
-
-    ymd = calendar.weekday(year, monday,day)
-
-    return ymd, hour
+    return hour
 
 
 def warning():
@@ -30,8 +28,9 @@ def warning():
     last = None
 
     while True:
-
-        ymd,hour = data_info()
+        now = datetime.now()
+        is_day_off = not calendar.isWorkDay(now.date())
+        hour = data_info()
         key = (datetime.now().strftime('%Y-%m-%d'), hour)
 
         if hour == 00: # полночь, любой день
@@ -39,11 +38,10 @@ def warning():
                 mess_info()
                 last = key
 
-        elif ymd == 5 or ymd == 6: # выходные
-            if hour == 12: # полдень
-                if key != last:
-                    mess_info()
-                    last = key
+        elif is_day_off and hour == 12: # выходные и праздник(полдень)
+            if key != last:
+                mess_info()
+                last = key
 
         time.sleep(60)
 
